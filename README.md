@@ -19,11 +19,8 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
 
 - git clone
 - copy config.yml.template to config.yml, update with your data
-- bundle install
-- ruby ./app.rb (thin)
-- rackup (webrick)
-- bundle exec unicorn -p $PORT -c ./config/unicorn.rb (unicorn)
-
+- `bundle install`
+- `rackup -p 4567` (or for dev `shotgun config.ru`)
 ### What?
 
  - A webform will be available at /add
@@ -34,5 +31,7 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
  
 ### TODO
  - webform
- - rest api
+ - rest api key
  - cli client
+ - cas-ification
+ - api-key regeneration via cas'd user
