@@ -4,7 +4,6 @@
 require 'sinatra'
 require 'sinatra/contrib/all'
 require 'json'
-# %w{rubygems sinatra}.each {|l| require l }
 
 class ChangeLogRbApp < Sinatra::Base
   register Sinatra::Contrib

@@ -1,24 +1,23 @@
-require 'minitest/autorun'
-require 'rack/test'
-require 'app'
 
 ENV['RACK_ENV'] = 'test'
-set :environment, :test
 
-class MyTest < Minitest::Unit::TestCase
+require 'app'
+require 'rspec'
+require 'rack/test'
 
+describe "The ChangeLogRb App" do
   include Rack::Test::Methods
-
+  
   def app
     ChangeLogRbApp
   end
-
-  def test_slash
+  
+  it "responds to slash" do
     get '/'
-    assert last_response.ok?
+    expect(last_response).to be_ok
   end
-
-  def test_post_to_add_responds_with_200
+  
+  it "responds with 200 to a post to /add" do
     post "/add", \
       { 
         "hostname" => "www.example.com", 
@@ -37,29 +36,22 @@ class MyTest < Minitest::Unit::TestCase
       }.to_json, \
       "CONTENT_TYPE" => "application/json"
     data = JSON.parse(last_response.body)
-    assert data['status'] == 200 
+    expect(data['status']).to eq(200)
   end
-
-  
-  def test_empty_post_responds_with_500
-    post "/add", \
-      Hash.new.to_json, \
-      "CONTENT_TYPE" => "application/json"
-      
+ 
+  it "responds with 500 for empty posts" do
+    post "/add", Hash.new.to_json, "CONTENT_TYPE" => "application/json"
     status = JSON.parse(last_response.body)['status']
-    assert status == 500
+    expect(status).to eq(500)
   end
  
-  def test_get_add_responds_with_404
+  it "responds with 404 for GET against /add" do
     get "/add"
-    assert true
-    # expect(last_response).to be_not_found
+    expect(last_response).to be_not_found
   end
  
-  def test_missing_pages_respond_with_404
+  it "responds with 404 for non-existent pages" do
     get "/nothere"
-    assert true
-    # expect(last_response).to be_not_found
+    expect(last_response).to be_not_found
   end
-
 end

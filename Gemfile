@@ -8,10 +8,8 @@ group :development, :test do
   gem 'shotgun'
   gem "rack-test"
   gem "rspec"
-  gem "minitest", "~> 4.0"
-  gem 'autotest-standalone'
-  gem 'autotest-growl'
-  gem 'autotest-fsevent'
+  gem 'guard'
+  gem 'guard-rspec'
 end
 
 group :production do

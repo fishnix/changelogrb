@@ -32,7 +32,7 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
  
 ### Testing
 
- - `autotest`
+ - `bundle exec guard`
  
 ### TODO
  - webform
