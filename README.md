@@ -21,6 +21,7 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
 - copy config.yml.template to config.yml, update with your data
 - `bundle install`
 - `rackup -p 4567` (or for dev `shotgun config.ru`)
+ 
 ### What?
 
  - A webform will be available at /add
@@ -28,6 +29,10 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
  - You can also POST without using the webform
  - The POST will drop the message into a redis "queue"
  - You should configure logstash to pull from that queue
+ 
+### Testing
+
+ - `autotest`
  
 ### TODO
  - webform
