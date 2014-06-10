@@ -37,7 +37,7 @@ class ChangeLogRbApp < Sinatra::Base
       response[:status] = 500
       response[:message] = "Bad Request"
     else
-      queue = ChangeLogRb::Queue.new(settings.queue, logger)
+      queue = ChangeLogRb::Queue.new(settings.queue)
       status = queue.add(params)
       
       if status == "OK"
