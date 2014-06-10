@@ -18,14 +18,14 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
 ### How?  
 
 - git clone
-- copy config.yml.template to config.yml, update with your data
+- edit config.yml with your data, modify the JSON schema if necessary
 - `bundle install`
 - `rackup -p 4567` (or for dev `shotgun config.ru`)
  
 ### What?
 
  - A webform will be available at /add
- - This webform will POST JSON to /add
+ - This webform will POST JSON to /api/add
  - You can also POST without using the webform
  - The POST will drop the message into a redis "queue"
  - You should configure logstash to pull from that queue
