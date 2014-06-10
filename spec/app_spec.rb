@@ -18,13 +18,13 @@ describe "The ChangeLogRb App" do
     expect(last_response).to be_ok
   end
   
-  it "responds with 200 to a post to /api/add" do
+  it "responds with 200 to a valid post to /api/add" do
     post "/api/add", \
       { 
         "hostname" => "www.example.com", 
-        "criticality" => "1",
+        "criticality" => 1,
         "description" => "Made a change.",
-        "user_id" => "test123",
+        "user" => "test123",
         "body" => "IkxvcmVtIGlwc3VtIGRvbG9yIHNpdCBhbWV0LCBjb25zZWN0ZXR1ciBhZGlw
         aXNpY2luZyBlbGl0LCBzZWQgZG8gZWl1c21vZCB0ZW1wb3IgaW5jaWRpZHVudCB1dCBsYWJv
         cmUgZXQgZG9sb3JlIG1hZ25hIGFsaXF1YS4gVXQgZW5pbSBhZCBtaW5pbSB2ZW5pYW0sIHF1a
@@ -39,6 +39,18 @@ describe "The ChangeLogRb App" do
     data = JSON.parse(last_response.body)
     expect(data['status']).to eq(200)
   end
+ 
+  it "responds with 500 to an invalid post to /api/add" do
+    post "/api/add", \
+      {
+        "invalid_key1" => "something not valid",
+        "invalid_key2" => "something else not valid"
+      }.to_json, \
+    "CONTENT_TYPE" => "application/json"
+    data = JSON.parse(last_response.body)
+    expect(data['status']).to eq(500)
+  end
+    
  
   it "responds with 500 for empty posts to /api/add" do
     post "/api/add", Hash.new.to_json, "CONTENT_TYPE" => "application/json"

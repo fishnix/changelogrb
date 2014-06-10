@@ -1,9 +1,11 @@
 #
 # ¯\_(ツ)_/¯
 #
+require 'rubygems'
 require 'sinatra'
 require 'sinatra/contrib/all'
 require 'json'
+require 'json-schema'
 require_relative 'changelogrb'
 
 class ChangeLogRbApp < Sinatra::Base
@@ -28,27 +30,33 @@ class ChangeLogRbApp < Sinatra::Base
   post '/api/add' do
     content_type :json
 
-    request.body.rewind  # in case someone already read it
+    request.body.rewind
     params = JSON.parse request.body.read
 
-    response = Hash.new
-  
-    if params.length == 0
-      response[:status] = 500
-      response[:message] = "Bad Request"
-    else
-      queue = ChangeLogRb::Queue.new(settings.queue)
-      status = queue.add(params)
-      
-      if status == "OK"
+    response = {
+      :status => 500,
+      :message => "Bad Request"
+    }
+    
+    valid_schema = JSON::Validator.validate(settings.schema, params)
+    
+    if params.length > 0 && valid_schema 
+            
+      if add_to_queue(params) == "OK"
         response[:status] = 200
-      else
-        response[:status] = 500
+        response[:message] = "Succes"
       end
       logger.debug "Got #{params.inspect}"
     end
-  
+      
     json response
+  end
+  
+  private
+  
+  def add_to_queue(data)
+    queue = ChangeLogRb::Queue.new(settings.queue)
+    queue.add(data)
   end
   
 end

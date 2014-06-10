@@ -20,6 +20,7 @@ GEM
       guard (~> 2.1)
       rspec (>= 2.14, < 4.0)
     json (1.8.1)
+    json-schema (2.2.2)
     kgio (2.9.2)
     listen (2.7.7)
       celluloid (>= 0.15.2)
@@ -84,6 +85,7 @@ DEPENDENCIES
   guard
   guard-rspec
   json
+  json-schema
   rack-test
   redis
   rspec

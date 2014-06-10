@@ -3,6 +3,7 @@ source 'http://rubygems.org'
 gem 'sinatra'
 gem 'sinatra-contrib'
 gem 'json'
+gem 'json-schema'
 gem 'redis'
 
 group :development, :test do

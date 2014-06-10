@@ -1,0 +1,22 @@
+queue:
+  host:   "127.0.0.1"
+  port:   "6379"
+# define the schema for validation
+# see also: https://github.com/hoxworth/json-schema
+# see also: http://tools.ietf.org/html/draft-zyp-json-schema-04
+schema: 
+  type: "object"
+  required:
+    - user
+    - hostname
+    - criticality
+    - description
+  properties:
+      user:
+        type: string
+      criticality:
+        type: integer
+      description:
+        type: string
+      body:
+        type: string
