@@ -4,6 +4,7 @@ ENV['RACK_ENV'] = 'test'
 require 'app'
 require 'rspec'
 require 'rack/test'
+require 'support/fakeredis'
 
 describe "The ChangeLogRb App" do
   include Rack::Test::Methods
@@ -17,8 +18,8 @@ describe "The ChangeLogRb App" do
     expect(last_response).to be_ok
   end
   
-  it "responds with 200 to a post to /add" do
-    post "/add", \
+  it "responds with 200 to a post to /api/add" do
+    post "/api/add", \
       { 
         "hostname" => "www.example.com", 
         "criticality" => "1",
@@ -39,14 +40,14 @@ describe "The ChangeLogRb App" do
     expect(data['status']).to eq(200)
   end
  
-  it "responds with 500 for empty posts" do
-    post "/add", Hash.new.to_json, "CONTENT_TYPE" => "application/json"
+  it "responds with 500 for empty posts to /api/add" do
+    post "/api/add", Hash.new.to_json, "CONTENT_TYPE" => "application/json"
     status = JSON.parse(last_response.body)['status']
     expect(status).to eq(500)
   end
  
-  it "responds with 404 for GET against /add" do
-    get "/add"
+  it "responds with 404 for GET against /api/add" do
+    get "/api/add"
     expect(last_response).to be_not_found
   end
  

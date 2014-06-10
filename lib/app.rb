@@ -4,20 +4,28 @@
 require 'sinatra'
 require 'sinatra/contrib/all'
 require 'json'
+require_relative 'changelogrb'
 
 class ChangeLogRbApp < Sinatra::Base
   register Sinatra::Contrib
-
+  register Sinatra::ConfigFile
   use Rack::MethodOverride
 
-  # config_file 'config.yml'
-  set :protection, :except => :frame_options
+  config_file '../config.yml'
 
   get "/" do
     ["ChangeLogRB!!"].join('<br />')
   end
 
-  post '/add' do
+  not_found do
+    'This is nowhere to be found.'
+  end
+
+  error do
+    'Sorry there was a nasty error - ' + env['sinatra.error'].name
+  end
+  
+  post '/api/add' do
     content_type :json
 
     request.body.rewind  # in case someone already read it
@@ -29,22 +37,19 @@ class ChangeLogRbApp < Sinatra::Base
       response[:status] = 500
       response[:message] = "Bad Request"
     else
-      response[:status] = 200
-      logger.info "Got #{params.inspect}"
+      queue = ChangeLogRb::Queue.new(settings.queue, logger)
+      status = queue.add(params)
+      
+      if status == "OK"
+        response[:status] = 200
+      else
+        response[:status] = 500
+      end
+      logger.debug "Got #{params.inspect}"
     end
   
     json response
   end
-
-  not_found do
-    'This is nowhere to be found.'
-  end
-
-  error do
-    'Sorry there was a nasty error - ' + env['sinatra.error'].name
-  end
-
-  private
   
 end
 
