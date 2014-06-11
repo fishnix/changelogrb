@@ -13,7 +13,7 @@ class ChangeLogRbApp < Sinatra::Base
   register Sinatra::ConfigFile
   use Rack::MethodOverride
 
-  config_file '../config.yml'
+  config_file '../config/config.yml'
 
   get "/" do
     ["ChangeLogRB!!"].join('<br />')
