@@ -1,5 +1,5 @@
-[![Build Status](https://travis-ci.org/fishnix/changelogrb.svg?branch=master)](https://travis-ci.org/fishnix/changelogrb)
 # ChangeLogRb  
+[![Build Status](https://travis-ci.org/fishnix/changelogrb.svg?branch=master)](https://travis-ci.org/fishnix/changelogrb)
   
 A very simple app to act as a frontend to logstash for my group's Changelogs.
 
