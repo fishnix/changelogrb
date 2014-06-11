@@ -37,10 +37,8 @@ class ChangeLogRbApp < Sinatra::Base
       :status => 500,
       :message => "Bad Request"
     }
-    
-    valid_schema = JSON::Validator.validate(settings.schema, params)
-    
-    if params.length > 0 && valid_schema 
+
+    if params.length > 0 && schema_valid?(params) 
             
       if add_to_queue(params) == "OK"
         response[:status] = 200
@@ -54,10 +52,14 @@ class ChangeLogRbApp < Sinatra::Base
   
   private
   
-  def add_to_queue(data)
-    queue = ChangeLogRb::Queue.new(settings.queue)
-    queue.add(data)
-  end
+    def add_to_queue(data)
+      queue = ChangeLogRb::Queue.new(settings.queue)
+      queue.add(data)
+    end
+  
+    def schema_valid?(data)
+      JSON::Validator.validate(settings.schema, data)
+    end
   
 end
 
