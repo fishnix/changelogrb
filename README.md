@@ -35,9 +35,17 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
 
  - `bundle exec guard`
  
+#### Docker
+You will end up with a redis instance and a changelogrb instance:
+ - `docker pull redis`
+ - `docker build -t changelogrb .`
+ - `docker run -d --name changelogrb_redis redis`
+ - `docker run -d -p 8080:8080 --name changelogrb --link changelogrb_redis:queue changelogrb`
+ 
 ### TODO
  - webform
  - rest api key
  - cli client
  - cas-ification
  - api-key regeneration via cas'd user
+ - add logstash pieces to docker for demo/poc

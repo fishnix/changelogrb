@@ -53,7 +53,13 @@ class ChangeLogRbApp < Sinatra::Base
   private
   
     def add_to_queue(data)
-      queue = ChangeLogRb::Queue.new(settings.queue)
+      if ENV["RACK_ENV"] == "docker"
+        queue = ChangeLogRb::Queue.new({:host => ENV['QUEUE_PORT_6379_TCP_ADDR'],
+                                        :port => ENV['QUEUE_PORT_6379_TCP_PORT']
+                                        })
+      else
+        queue = ChangeLogRb::Queue.new(settings.queue)
+      end
       queue.add(data)
     end
   
