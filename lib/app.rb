@@ -33,18 +33,30 @@ class ChangeLogRbApp < Sinatra::Base
     request.body.rewind
     params = JSON.parse request.body.read
 
+    # our default response
     response = {
       :status => 500,
       :message => "Bad Request"
     }
 
-    if params.length > 0 && schema_valid?(params) 
-            
-      if add_to_queue(params) == "OK"
-        response[:status] = 200
-        response[:message] = "Succes"
+    if params.length > 0 
+      schema_status = schema_validate(params) 
+      if schema_status == "OK"
+        # if message looks good - push it to the queue
+        q_status = add_to_queue(params)
+        if q_status == "OK"
+          response[:status] = 200
+          response[:message] = "Success"
+        else
+          # adding to the queue failed
+          response[:message] = "Bad request: Could not add to queue (#{q_status})"
+        end
+        logger.debug "Got #{params.inspect}"
+
+      else
+        # schema validation failed
+        response[:message] = "Bad request: JSON schema validation failed (#{schema_status})"
       end
-      logger.debug "Got #{params.inspect}"
     end
       
     json response
@@ -64,7 +76,18 @@ class ChangeLogRbApp < Sinatra::Base
     end
   
     def schema_valid?(data)
-      JSON::Validator.validate(settings.schema, data)
+    # returns true/false
+      JSON::Validator.validate!(settings.schema, data)
+    end
+  
+    def schema_validate(data)
+    # returns "OK" or validations error description
+      begin
+        JSON::Validator.validate!(settings.schema, data)
+      rescue JSON::Schema::ValidationError
+        return $!.message
+      end
+      return "OK"
     end
   
 end
