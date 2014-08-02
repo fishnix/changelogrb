@@ -37,10 +37,12 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
  
 ### Client
 
- - Sample API POST using curl:
+ - Sample API POST using curl
 
-      `curl http://localhost:4567/api/add -X POST -H 'Content-Type: application/json' \
-      -d '{"user": "snarky", "hostname": "herp.derp.edu", "criticality": 3, "description": "Added snarky comment", "body": "--Some diff--"}'`
+ ```
+ curl http://localhost:4567/api/add -X POST -H 'Content-Type: application/json' \
+ -d '{"user": "snarky", "hostname": "herp.derp.edu", "criticality": 3, "description": "Added snarky comment", "body": "--Some diff--"}'
+ ```
 
 #### Docker
 You will end up with a redis instance and a changelogrb instance:
