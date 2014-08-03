@@ -6,13 +6,12 @@ TEMPFILE="/tmp/$(basename $0).$$.tmp"
 # set defaults
 CL_SERVER="localhost"
 CL_PORT="4567"
-CL_URI="http://${CL_SERVER}:${CL_PORT}/api/add"
 CL_USER=""
 CL_HOSTNAME=""
 CL_CRITICALITY=""
 CL_DESCRIPTION=""
 CL_BODY=""
-CL_ARGS="CL_SERVER CL_PORT CL_URI CL_USER CL_HOSTNAME CL_CRITICALITY CL_DESCRIPTION"
+CL_ARGS="CL_SERVER CL_PORT CL_USER CL_HOSTNAME CL_CRITICALITY CL_DESCRIPTION"
 
 list_args ()
 {
@@ -33,8 +32,6 @@ check_args ()
   done
   if [[ ${check_error} == 1 ]]; then 
     exit
-  else
-    echo "Check OK"
   fi
 }
 
@@ -119,8 +116,14 @@ echo -e "### Contents of change below ### \n" > ${TEMPFILE}
 CL_BODY=`cat ${TEMPFILE} | base64 -w 0`
 
 # POST to the API
-curl ${CL_URI} -X POST -H 'Content-Type: application/json' \
+CL_URI="http://${CL_SERVER}:${CL_PORT}/api/add"
+echo "Sending change to ${CL_URI} ..."
+curl ${CL_URI} -sS -X POST -H 'Content-Type: application/json' \
  -d "{\"user\": \"${CL_USER}\", \"hostname\": \"${CL_HOSTNAME}\", \"criticality\": ${CL_CRITICALITY}, \"description\": \"${CL_DESCRIPTION}\", \"body\": \"${CL_BODY}\"}"
+retval=$?
+echo
 
 rm -f ${TEMPFILE}
+
+exit ${retval}
 
