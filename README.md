@@ -43,7 +43,14 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
  curl http://localhost:4567/api/add -X POST -H 'Content-Type: application/json' \
  -d '{"user": "snarky", "hostname": "herp.derp.edu", "criticality": 3, "description": "Added snarky comment", "body": "--Some diff--"}'
  ```
-
+ 
+ - Using the shell client (will open editor so you can paste the body of your change)
+ 
+ ```
+ $ ./client/changelog.sh -u snarky -h herp.derp.edu -c 3 -d "Added snarky comment"
+ {"status":200,"message":"Success"}
+ ```
+ 
 #### Docker
 You will end up with a redis instance and a changelogrb instance:
  - `docker pull redis`
