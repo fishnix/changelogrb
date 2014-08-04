@@ -14,7 +14,7 @@ class ChangeLogRbApp < Sinatra::Base
   use Rack::MethodOverride
 
   set :root, File.dirname(File.dirname(__FILE__))
-  config_file '../config/config.yml'
+  config_file 'config/config.yml'
 
   get "/" do
     erb :index
