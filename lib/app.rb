@@ -14,7 +14,7 @@ class ChangeLogRbApp < Sinatra::Base
   use Rack::MethodOverride
 
   set :root, File.dirname(File.dirname(__FILE__))
-  config_file '../config/config.yml'
+  config_file 'config/config.yml'
 
   get "/" do
     erb :index
@@ -28,6 +28,32 @@ class ChangeLogRbApp < Sinatra::Base
     erb :list
   end
 
+  post "/add" do
+    # convert the form data to a proper hash and submit for processing
+    # we encode the body as base64 using pack("m")
+    body64 = [params[:cl_body]].pack("m") unless params[:cl_body].nil?
+    response = process_add_request( {"user" => params[:cl_user], "hostname" => params[:cl_hostname], "criticality" => params[:cl_criticality].to_i, "description" => params[:cl_description], "body" => body64} )
+
+    if response[:status] == 200
+      @message = "<strong>Change record successfully submitted!</strong>"
+      @message_class = "alert alert-success"
+    else
+      @message = "<strong>Error submitting request!</strong><br>#{response[:message]}"
+      @message_class = "alert alert-danger"
+    end
+    erb :_message
+  end
+
+  post '/api/add' do
+    content_type :json
+
+    request.body.rewind
+    params = JSON.parse request.body.read
+
+    #puts params.inspect
+    json process_add_request(params)
+  end
+  
   not_found do
     'This is nowhere to be found.'
   end
@@ -36,19 +62,19 @@ class ChangeLogRbApp < Sinatra::Base
     'Sorry there was a nasty error - ' + env['sinatra.error'].name
   end
   
-  post '/api/add' do
-    content_type :json
+  helpers do
 
-    request.body.rewind
-    params = JSON.parse request.body.read
+    def process_add_request(params)
+      # our default response
+      response = {
+        :status => 500,
+        :message => "Bad Request"
+      }
 
-    # our default response
-    response = {
-      :status => 500,
-      :message => "Bad Request"
-    }
+      puts "process_json_request params: #{params.inspect}"
 
-    if params.length > 0 
+      return response unless params.length > 0 
+
       schema_status = schema_validate(params) 
       if schema_status == "OK"
         # if message looks good - push it to the queue
@@ -66,11 +92,13 @@ class ChangeLogRbApp < Sinatra::Base
         # schema validation failed
         response[:message] = "Bad request: JSON schema validation failed (#{schema_status})"
       end
+
+      return response
     end
-      
-    json response
+
   end
-  
+
+
   private
   
     def add_to_queue(data)
@@ -86,7 +114,7 @@ class ChangeLogRbApp < Sinatra::Base
   
     def schema_valid?(data)
     # returns true/false
-      JSON::Validator.validate!(settings.schema, data)
+      JSON::Validator.validate(settings.schema, data)
     end
   
     def schema_validate(data)
@@ -98,7 +126,7 @@ class ChangeLogRbApp < Sinatra::Base
       end
       return "OK"
     end
-  
+
 end
 
 
