@@ -15,8 +15,8 @@ module ChangeLogRb
       begin
         @redis.rpush("changelog", cl_json)
         "OK"
-      rescue
-        "ERROR"
+      rescue => e
+        "ERROR: #{e}"
       end
     end
   end
