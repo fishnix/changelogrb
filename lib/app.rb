@@ -13,10 +13,19 @@ class ChangeLogRbApp < Sinatra::Base
   register Sinatra::ConfigFile
   use Rack::MethodOverride
 
+  set :root, File.dirname(File.dirname(__FILE__))
   config_file '../config/config.yml'
 
   get "/" do
-    ["ChangeLogRB!!"].join('<br />')
+    erb :index
+  end
+
+  get "/add" do
+    erb :add
+  end
+
+  get "/list" do
+    erb :list
   end
 
   not_found do

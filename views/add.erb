@@ -1,0 +1,48 @@
+<div class="row">
+  <h2>Add new change</h2>
+</div>
+<br>
+<form class="form-horizontal" role="form" action="/add" method="POST">
+  <div class="form-group">
+    <label class="col-sm-1 control-label">Criticality</label>
+    <div class="col-sm-1">
+      <select class="form-control" name="cl_criticality" required>
+        <option value="1">1*</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5" selected>5</option>
+      </select>
+    </div>
+    <div class="col-sm-2">* 1=Critical</div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-1 control-label">User</label>
+    <div class="col-sm-1">
+      <input type="text" class="form-control" placeholder="e.g. xy123" maxlength="16" name="cl_user" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-1 control-label">Hostname</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" placeholder="e.g. serv1.example.com" maxlength="64" name="cl_hostname" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-1 control-label">Description</label>
+    <div class="col-sm-4">
+      <input type="text" class="form-control" placeholder="e.g. restart apache, unresponsive" name="cl_description" required>
+    </div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-1 control-label">Body</label>
+    <div class="col-sm-6">
+      <textarea rows="10" class="form-control" placeholder="Paste your change here (not required) - could be console output, diff, etc." name="cl_body"></textarea>
+    </div>
+  </div>
+  <div class="form-group">
+    <div class="col-sm-offset-1 col-sm-1">
+      <button type="submit" class="btn btn-default">Post</button>
+    </div>
+  </div>
+</form>
