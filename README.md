@@ -22,6 +22,7 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
 - edit config.yml with your data, modify the JSON schema if necessary
 - `bundle install`
 - `rackup -p 4567` (or for dev `shotgun config.ru`)
+- `bundle exec unicorn -c config/unicorn.rb`
  
 ### What?
 
