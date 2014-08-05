@@ -28,29 +28,12 @@ class ChangeLogRbApp < Sinatra::Base
     erb :list
   end
 
-  post "/add" do
-    # convert the form data to a proper hash and submit for processing
-    # we encode the body as base64 using pack("m")
-    body64 = [params[:cl_body]].pack("m") unless params[:cl_body].nil?
-    response = process_add_request( {"user" => params[:cl_user], "hostname" => params[:cl_hostname], "criticality" => params[:cl_criticality].to_i, "description" => params[:cl_description], "body" => body64} )
-
-    if response[:status] == 200
-      @message = "<strong>Change record successfully submitted!</strong>"
-      @message_class = "alert alert-success"
-    else
-      @message = "<strong>Error submitting request!</strong><br>#{response[:message]}"
-      @message_class = "alert alert-danger"
-    end
-    erb :_message
-  end
-
   post '/api/add' do
     content_type :json
 
     request.body.rewind
     params = JSON.parse request.body.read
 
-    #puts params.inspect
     json process_add_request(params)
   end
   
