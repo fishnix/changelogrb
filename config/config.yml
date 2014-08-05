@@ -1,6 +1,7 @@
 queue:
   host:   "127.0.0.1"
   port:   "6379"
+  recent: "100"   # how many entries to keep in the recent changelog list
 # define the schema for validation
 # see also: https://github.com/hoxworth/json-schema
 # see also: http://tools.ietf.org/html/draft-zyp-json-schema-04
