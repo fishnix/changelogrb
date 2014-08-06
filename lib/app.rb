@@ -25,7 +25,8 @@ class ChangeLogRbApp < Sinatra::Base
   end
 
   get "/list" do
-    erb :list
+    recent_list = get_queue_recent
+    erb :list, locals: { recent_list: recent_list }
   end
 
   post '/api/add' do
@@ -93,6 +94,19 @@ class ChangeLogRbApp < Sinatra::Base
         queue = ChangeLogRb::Queue.new(settings.queue)
       end
       queue.add(data)
+      # also add to a recent redis list, so latest changes are quickly accessible
+      queue.add_recent(data)
+    end
+  
+    def get_queue_recent()
+      if ENV["RACK_ENV"] == "docker"
+        queue = ChangeLogRb::Queue.new({:host => ENV['QUEUE_PORT_6379_TCP_ADDR'],
+                                        :port => ENV['QUEUE_PORT_6379_TCP_PORT']
+                                        })
+      else
+        queue = ChangeLogRb::Queue.new(settings.queue)
+      end
+      queue.get_recent()
     end
   
     def schema_valid?(data)
