@@ -29,7 +29,7 @@ $(document).ready(function()
       },
       error: function(jqXHR, textStatus, errorThrown) { 
         console.log(jqXHR.responseText);
-        $("#divmsg").html("Error processing request!<br>" + errorThrown); 
+        $("#divmsg").html('<div class="alert alert-danger"><strong>Error processing request!</strong><br>' +  errorThrown + '</div>');
       },
   //    success: function(data) { console.log("Success!<br>" + data) },
   //    error: function(data) { console.log("Failed!<br>" + data) },

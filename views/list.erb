@@ -1,5 +1,21 @@
+<script src="/js/list_hide_rows.js"></script>
+
 <div class="row">
   <h2>List of recent changes</h2>
 </div>
 <br>
-
+  <table class="table table-striped table-condensed table-hover">
+  <% recent_list.each do |change| %>
+    <tr>
+      <td>+</td>
+    <% JSON.parse(change).each do |item| %>
+      <td><%= item[1] if item[0] != 'body' %></td>
+    <% if item[0] == 'body' %>
+    </tr>
+    <tr><td colspan="5">
+      <%= "<pre>#{item[1].unpack('m')[0]}</pre>" %>
+    </td></tr>
+    <% end %>
+    <% end %>
+  <% end %>
+  </table>
