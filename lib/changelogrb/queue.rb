@@ -8,7 +8,7 @@ module ChangeLogRb
       redis_host  = args[:host] || '127.0.0.1'
       redis_port  = args[:port] || '6379'
       @redis = Redis.new(:host => redis_host, :port => redis_port)
-      @recent_count  = args[:recent] || '100'
+      @recent_count = args[:recent] || 100
     end
     
     def add(cl)

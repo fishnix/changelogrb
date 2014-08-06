@@ -126,4 +126,3 @@ class ChangeLogRbApp < Sinatra::Base
 
 end
 
-
