@@ -18,6 +18,16 @@ describe "The ChangeLogRb App" do
     expect(last_response).to be_ok
   end
   
+  it "responds with 200 to GET against /add" do
+    get '/add'
+    expect(last_response).to be_ok
+  end
+  
+  it "responds with 200 to GET against /list" do
+    get '/list'
+    expect(last_response).to be_ok
+  end
+  
   it "responds with 200 to a valid post to /api/add" do
     post "/api/add", \
       { 
