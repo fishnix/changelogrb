@@ -15,16 +15,16 @@ describe "The ChangeLogRb App" do
   
   it "responds to slash" do
     get '/'
-    expect(last_response).to be_ok
+    expect(last_response).to be_redirect
   end
   
   it "responds with 200 to GET against /add" do
-    get '/add'
+    get '/ui/add'
     expect(last_response).to be_ok
   end
   
   it "responds with 200 to GET against /list" do
-    get '/list'
+    get '/ui/list'
     expect(last_response).to be_ok
   end
   

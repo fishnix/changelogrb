@@ -5,6 +5,7 @@ gem 'sinatra-contrib'
 gem 'json'
 gem 'json-schema'
 gem 'redis'
+gem "rubycas-client"
 
 group :development, :test do
   gem 'shotgun'
