@@ -7,7 +7,7 @@ module Sinatra
 
     module Helpers
       
-      CAS_CLIENT = CASClient::Client.new( :cas_base_url => 'https://secure.its.yale.edu/cas', 
+      CAS_CLIENT = CASClient::Client.new( :cas_base_url => "https://secure.its.yale.edu/cas",
                                           :log => Logger.new(STDOUT), 
                                           :ticket_store_config => {:storage_dir => '.'})
       
@@ -40,6 +40,7 @@ module Sinatra
       end
 
       def logout!
+        # CAS_CLIENT.logout!
         session[:authorized] = false
       end
       

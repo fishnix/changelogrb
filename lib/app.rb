@@ -15,22 +15,19 @@ class ChangeLogRbApp < Sinatra::Base
   use Rack::MethodOverride
   helpers Sinatra::ChangeLogRbApp::Helpers
   
-  config_file 'config/config.yml'
-
   set :sessions, true
   set :logging, true
   set :root, File.dirname(File.dirname(__FILE__))
-
   configure(:development) { 
     set :session_secret, "secret"
     set :logging, :debug
   }
+
+  config_file 'config/config.yml'
   
   before "/ui/*" do
     authorize!
-    # require_logged_in
   end
-
 
   get "/" do
     redirect '/ui/add'

@@ -2,31 +2,7 @@ require 'sinatra/base'
 
 module Sinatra
   module ChangeLogRbApp
-    module Helpers
-      
-      # Check if there is a user_id in the session      
-      def is_authenticated?
-        if !!session[:user_id]
-          logger.debug("Logged in... Session: #{session.inspect}")
-          return true
-        else
-          logger.debug("Not logged in... Session: #{session.inspect}")
-          return false
-        end
-      end
-      
-      # Unless already authenticated, authenticate!
-      def require_logged_in
-        logger.debug("login required for #{request.url}, checking")
-        unless is_authenticated?
-          @authprov = ChangeLogRb::Auth.new({ :authprovider => settings.auth['provider'],
-                                              :config => settings.auth['config'],
-                                              :logger => logger
-                                            })
-          session[:user_id] = @authprov.authenticate!         
-        end
-      end
-  
+    module Helpers  
       def add_to_queue(data)
         if ENV["RACK_ENV"] == "docker"
           queue = ChangeLogRb::Queue.new({:host => ENV['QUEUE_PORT_6379_TCP_ADDR'],
@@ -40,14 +16,15 @@ module Sinatra
         queue.add_recent(data)
       end
   
-      def get_queue_recent()
+      def get_queue_recent        
         if ENV["RACK_ENV"] == "docker"
           queue = ChangeLogRb::Queue.new({:host => ENV['QUEUE_PORT_6379_TCP_ADDR'],
                                           :port => ENV['QUEUE_PORT_6379_TCP_PORT']
-                                          })
+                                          })          
         else
           queue = ChangeLogRb::Queue.new(settings.queue)
         end
+        puts queue.inspect
         queue.get_recent()
       end
       

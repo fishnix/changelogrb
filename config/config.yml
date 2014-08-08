@@ -1,6 +1,6 @@
 queue:
-  host:   "127.0.0.1"
-  port:   "6379"
+  host: "127.0.0.1"
+  port: "6379"
   recent: 100   # how many entries to keep in the recent changelog list
 auth:
   provider: "Sinatra::CasAuth"
