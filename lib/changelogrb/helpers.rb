@@ -6,17 +6,24 @@ module Sinatra
       
       # Check if there is a user_id in the session      
       def is_authenticated?
-        logger.debug("Checking if logged in... Session: #{session.inspect}")
-        return !!session[:user_id]
+        if !!session[:user_id]
+          logger.debug("Logged in... Session: #{session.inspect}")
+          return true
+        else
+          logger.debug("Not logged in... Session: #{session.inspect}")
+          return false
+        end
       end
       
       # Unless already authenticated, authenticate!
       def require_logged_in
+        logger.debug("login required for #{request.url}, checking")
         unless is_authenticated?
           @authprov = ChangeLogRb::Auth.new({ :authprovider => settings.auth['provider'],
-                                              :config => settings.auth['config']
+                                              :config => settings.auth['config'],
+                                              :logger => logger
                                             })
-          session[:user_id] = @authprov.authenticate!
+          session[:user_id] = @authprov.authenticate!         
         end
       end
   

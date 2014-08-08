@@ -16,14 +16,19 @@ class ChangeLogRbApp < Sinatra::Base
   helpers Sinatra::ChangeLogRbApp::Helpers
 
   set :sessions, true
+  set :logging, true
   set :root, File.dirname(File.dirname(__FILE__))
 
-  # required for shotgun to work....
-  configure(:development) { set :session_secret, "secret" }
+  configure(:development) { 
+    set :session_secret, "secret"
+    set :logging, Logger::DEBUG
+  }
+  
   config_file 'config/config.yml'
 
   before "/ui/*" do
     require_logged_in
+    doit
   end
 
   get "/" do
