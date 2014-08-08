@@ -3,7 +3,7 @@ queue:
   port:   "6379"
   recent: 100   # how many entries to keep in the recent changelog list
 auth:
-  provider: "ChangeLogRb::AuthNone"
+  provider: "Sinatra::CasAuth"
   config: 
     user: 'user2'
 # define the schema for validation

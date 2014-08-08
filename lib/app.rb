@@ -11,9 +11,11 @@ require_relative 'changelogrb'
 class ChangeLogRbApp < Sinatra::Base
   register Sinatra::Contrib
   register Sinatra::ConfigFile
-    
+  register Sinatra::CasAuth
   use Rack::MethodOverride
   helpers Sinatra::ChangeLogRbApp::Helpers
+  
+  config_file 'config/config.yml'
 
   set :sessions, true
   set :logging, true
@@ -24,11 +26,11 @@ class ChangeLogRbApp < Sinatra::Base
     set :logging, :debug
   }
   
-  config_file 'config/config.yml'
-
   before "/ui/*" do
-    require_logged_in
+    authorize!
+    # require_logged_in
   end
+
 
   get "/" do
     redirect '/ui/add'
