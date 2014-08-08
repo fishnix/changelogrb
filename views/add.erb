@@ -7,32 +7,40 @@
 <br>
 <form class="form-horizontal" id="addform" role="form">
   <div class="form-group">
-    <label class="col-sm-1 control-label">Criticality</label>
-    <div class="col-sm-1">
-      <select class="form-control" id="cl_criticality" name="cl_criticality" required>
-        <option value="1">1*</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5" selected>5</option>
-      </select>
-    </div>
-    <div class="col-sm-2">* 1=Critical</div>
-  </div>
-  <div class="form-group">
-    <label class="col-sm-1 control-label">User</label>
+    <label class="col-sm-1 control-label" title="Who made the change">User</label>
     <div class="col-sm-1">
       <input type="text" class="form-control" placeholder="e.g. xy123" maxlength="16" id="cl_user" name="cl_user" value="<%= user_id %>" required>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-1 control-label">Hostname</label>
+    <label class="col-sm-1 control-label" title="Rate the impact of the change">Criticality</label>
+    <div class="col-sm-1">
+      <select class="form-control" id="cl_criticality" name="cl_criticality" required>
+        <option value="1">1*</option>
+        <option value="2">2</option>
+        <option value="3" selected>3</option>
+      </select>
+    </div>
+    <div class="col-sm-2">* 1=Critical</div>
+  </div>
+  <div class="form-group">
+    <label class="col-sm-1 control-label" title="When was the change made">Date</label>
+    <div class="col-sm-2">
+      <input type="date" class="form-control" id="cl_date" name="cl_date" value="<%= Time.now.strftime("%Y-%m-%d") %>" required>
+    </div>
+    <div class="col-sm-2">
+      <input type="time" class="form-control" id="cl_time" name="cl_time" value="<%= Time.now.strftime("%H:%M:%S") %>">
+    </div>
+  </div>
+  <% puts Time.now.strftime("%d/%m/%Y %I:%M %p") %>
+  <div class="form-group">
+    <label class="col-sm-1 control-label" title="Where was the change made">Hostname</label>
     <div class="col-sm-4">
       <input type="text" class="form-control" placeholder="e.g. serv1.example.com" maxlength="64" id="cl_hostname" name="cl_hostname" required>
     </div>
   </div>
   <div class="form-group">
-    <label class="col-sm-1 control-label">Description</label>
+    <label class="col-sm-1 control-label" title="Summary of the change">Description</label>
     <div class="col-sm-4">
       <input type="text" class="form-control" placeholder="e.g. restart apache, unresponsive" id="cl_description" name="cl_description" required>
     </div>
