@@ -1,5 +1,5 @@
 $(function() {
-  $("td[colspan=5]").find("pre").hide();
+  $("td[colspan=6]").find("pre").hide();
   $("table").click(function(event) {
     event.stopPropagation();
     var $target = $(event.target);

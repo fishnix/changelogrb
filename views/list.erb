@@ -5,17 +5,26 @@
 </div>
 <br>
   <table class="table table-striped table-condensed table-hover">
-  <% recent_list.each do |change| %>
+  <% recent_list.map {|x| JSON.parse x}.each do |change|
+       case change["criticality"] 
+       when 1 %>
+    <tr class="danger">
+    <% when 2 %>
+    <tr class="warning">
+    <% when 3 %>
+    <tr class="info">
+    <% else %>
     <tr>
+    <% end %>
       <td>+</td>
-    <% JSON.parse(change).each do |item| %>
-      <td><%= item[1] if item[0] != 'body' %></td>
-    <% if item[0] == 'body' %>
+      <td title="criticality"><%= change["criticality"] %></td>
+      <td title="date"><%= "#{change["date"]} #{change["time"]}" %></td>
+      <td title="user"><%= change["user"] %></td>
+      <td title="hostname"><%= change["hostname"] %></td>
+      <td title="description"><%= change["description"] %></td>
     </tr>
-    <tr><td colspan="5">
-      <%= "<pre>#{item[1].unpack('m')[0]}</pre>" %>
+    <tr><td colspan="6">
+      <%= "<pre>#{change["body"].unpack('m')[0]}</pre>" %>
     </td></tr>
-    <% end %>
-    <% end %>
   <% end %>
   </table>

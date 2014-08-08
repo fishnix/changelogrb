@@ -19,6 +19,10 @@ schema:
   properties:
       user:
         type: string
+      date:
+        type: string
+      hostname:
+        type: string
       criticality:
         type: integer
       description:
