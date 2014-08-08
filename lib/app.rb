@@ -21,14 +21,13 @@ class ChangeLogRbApp < Sinatra::Base
 
   configure(:development) { 
     set :session_secret, "secret"
-    set :logging, Logger::DEBUG
+    set :logging, :debug
   }
   
   config_file 'config/config.yml'
 
   before "/ui/*" do
     require_logged_in
-    doit
   end
 
   get "/" do
