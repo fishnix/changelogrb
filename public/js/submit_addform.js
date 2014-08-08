@@ -6,11 +6,13 @@ $(document).ready(function()
     // parse form parameters
     var cl_criticality = $("#cl_criticality").val();
     var cl_user = $("#cl_user").val();
+    var cl_date = $("#cl_date").val();
+    var cl_time = $("#cl_time").val();
     var cl_hostname = $("#cl_hostname").val();
     var cl_description = $("#cl_description").val();
     var cl_body = btoa($("#cl_body").val()); // base64-encode the body
     // make into JSON
-    formjson = '{"user": "' + cl_user + '", "hostname": "' + cl_hostname + '", "criticality": ' + cl_criticality + ', "description": "' + cl_description + '", "body": "' + cl_body + '"}' 
+    formjson = '{"date": "' + cl_date + '", "time": "' + cl_time + '", "user": "' + cl_user + '", "hostname": "' + cl_hostname + '", "criticality": ' + cl_criticality + ', "description": "' + cl_description + '", "body": "' + cl_body + '"}' 
     console.log(formjson);
   
     $.ajax({
@@ -31,8 +33,6 @@ $(document).ready(function()
         console.log(jqXHR.responseText);
         $("#divmsg").html('<div class="alert alert-danger"><strong>Error processing request!</strong><br>' +  errorThrown + '</div>');
       },
-  //    success: function(data) { console.log("Success!<br>" + data) },
-  //    error: function(data) { console.log("Failed!<br>" + data) },
       contentType: "application/json"
     });
   });
