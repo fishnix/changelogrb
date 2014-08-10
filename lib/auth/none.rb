@@ -7,7 +7,6 @@ module Sinatra
       def authorize!
         session[:authorized] = true
         session[:user_id] = 'user'
-        true
       end
 
       def logout!

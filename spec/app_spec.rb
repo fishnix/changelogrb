@@ -2,41 +2,39 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'app'
-require 'rspec'
-require 'rack/test'
 require 'spec_helper'
 require 'support/fakeredis'
 
 describe "The ChangeLogRb App" do
   include Rack::Test::Methods
-  
+
   def app
     ChangeLogRbApp
   end
-  
+
   before(:each) do
     app.any_instance.stub(:authorize!).and_return(true)
   end
-  
+
   it "responds to slash" do
     get '/'
     expect(last_response).to be_redirect
   end
-  
+
   it "responds with 200 to GET against /ui/add" do
     get '/ui/add'
     expect(last_response).to be_ok
   end
-  
+
   it "responds with 200 to GET against /ui/list" do
     get '/ui/list'
     expect(last_response).to be_ok
   end
-  
+
   it "responds with 200 to a valid post to /api/add" do
     post "/api/add", \
-      { 
-        "hostname" => "www.example.com", 
+      {
+        "hostname" => "www.example.com",
         "criticality" => 1,
         "description" => "Made a change.",
         "user" => "test123",
@@ -54,7 +52,7 @@ describe "The ChangeLogRb App" do
     data = JSON.parse(last_response.body)
     expect(data['status']).to eq(200)
   end
- 
+
   it "responds with 500 to an invalid post to /api/add" do
     post "/api/add", \
       {
@@ -65,19 +63,19 @@ describe "The ChangeLogRb App" do
     data = JSON.parse(last_response.body)
     expect(data['status']).to eq(500)
   end
-    
- 
+
+
   it "responds with 500 for empty posts to /api/add" do
     post "/api/add", Hash.new.to_json, "CONTENT_TYPE" => "application/json"
     status = JSON.parse(last_response.body)['status']
     expect(status).to eq(500)
   end
- 
+
   it "responds with 404 for GET against /api/add" do
     get "/api/add"
     expect(last_response).to be_not_found
   end
- 
+
   it "responds with 404 for non-existent pages" do
     get "/nothere"
     expect(last_response).to be_not_found

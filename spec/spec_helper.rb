@@ -1,4 +1,7 @@
+ENV['RACK_ENV'] = 'test'
 
+require 'rspec'
+require 'rack/test'
 
 RSpec.configure do |config|
   config.mock_with :rspec do |mocks|
@@ -10,4 +13,5 @@ RSpec.configure do |config|
     mocks.verify_doubled_constant_names = true
     mocks.syntax = [:expect,:should]
   end
+  config.include Sinatra::TestHelpers
 end

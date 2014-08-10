@@ -2,8 +2,7 @@
 ENV['RACK_ENV'] = 'test'
 
 require 'changelogrb'
-require 'rspec'
-require 'rack/test'
+require 'spec_helper'
 require 'support/fakeredis'
 require 'json'
 
