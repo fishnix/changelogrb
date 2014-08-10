@@ -5,7 +5,9 @@ queue:
 auth:
   provider: "Sinatra::CasAuth"
   config: 
-    user: 'user2'
+    base_url: 'https://secure.its.yale.edu/cas'
+    ticket_store_config:
+      storage_dir: '.'
 # define the schema for validation
 # see also: https://github.com/hoxworth/json-schema
 # see also: http://tools.ietf.org/html/draft-zyp-json-schema-04

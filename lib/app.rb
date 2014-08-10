@@ -24,8 +24,9 @@ class ChangeLogRbApp < Sinatra::Base
   }
 
   config_file 'config/config.yml'
-  
+    
   before "/ui/*" do
+    @auth = settings.auth
     authorize!
   end
 
