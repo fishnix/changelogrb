@@ -4,6 +4,7 @@ ENV['RACK_ENV'] = 'test'
 require 'app'
 require 'rspec'
 require 'rack/test'
+require 'spec_helper'
 require 'support/fakeredis'
 
 describe "The ChangeLogRb App" do
@@ -13,17 +14,21 @@ describe "The ChangeLogRb App" do
     ChangeLogRbApp
   end
   
+  before(:each) do
+    app.any_instance.stub(:authorize!).and_return(true)
+  end
+  
   it "responds to slash" do
     get '/'
     expect(last_response).to be_redirect
   end
   
-  it "responds with 200 to GET against /add" do
+  it "responds with 200 to GET against /ui/add" do
     get '/ui/add'
     expect(last_response).to be_ok
   end
   
-  it "responds with 200 to GET against /list" do
+  it "responds with 200 to GET against /ui/list" do
     get '/ui/list'
     expect(last_response).to be_ok
   end
