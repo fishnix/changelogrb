@@ -16,15 +16,16 @@
         <li><a href="/ui/add">Add</a></li>
         <li><a href="/ui/list">List</a></li>
       </ul>
-      <div class="col-sm-2 navbar-right">
-        <form class="navbar-form navbar-right" role="search">
-          <div class="input-group input-group-sm">
-            <input type="text" class="form-control" placeholder="Search">
-            <span class="input-group-btn">
-              <button type="submit" class="btn btn-default">Search</button>
-            </span>
-          </div>
-        </form>
+      <div class="dropdown navbar-right">
+        <button class="btn btn-default btn-sm navbar-btn dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">
+          Manage Token
+          <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="/ui/token/show">Show Token</a></li>
+          <li role="presentation" class="divider"></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="/ui/token/regenerate">Regenerate Token</a></li>
+        </ul>
       </div>
     </div><!-- /.navbar-collapse -->
   </div><!-- /.container-fluid -->

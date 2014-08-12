@@ -1,31 +1,69 @@
 require 'sinatra/base'
+require 'securerandom'
 
 module Sinatra
   module ChangeLogRbApp
-    module Helpers  
-      def add_to_queue(data)
+    module Helpers
+      
+      def queue
         if ENV["RACK_ENV"] == "docker"
-          queue = ChangeLogRb::Queue.new({:host => ENV['QUEUE_PORT_6379_TCP_ADDR'],
+          return ChangeLogRb::Queue.new({:host => ENV['QUEUE_PORT_6379_TCP_ADDR'],
                                           :port => ENV['QUEUE_PORT_6379_TCP_PORT']
                                           })
         else
-          queue = ChangeLogRb::Queue.new(settings.queue)
+          return ChangeLogRb::Queue.new(settings.queue)
         end
-        queue.add(data)
+      end
+      
+      def token_valid?(id, token)
+        
+        logger.info("validating token: #{token} for id: #{id}")
+        
+        q = queue
+        i = q.get_id_by_token(token)
+        t = q.get_token_expiration(token)
+        
+        logger.info("token_valid? id: #{i}, expiration: #{t}")
+        
+        return false if i.nil? || t.nil?
+        
+        if i == id && Time.parse(t).future?
+          return true
+        else
+          return false
+        end
+      end
+            
+      def get_token
+        q = queue
+        return q.get_token_by_id(session[:user_id])
+      end
+      
+      def get_token_expiraton(token)
+        q = queue
+        return q.get_token_expiration(token)
+      end
+      
+      def set_token(token)
+        q = queue
+        q.add_token(session[:user_id], token)
+      end
+      
+      def generate_token
+        return SecureRandom.urlsafe_base64
+      end
+      
+      def add_to_queue(data)
+        q = queue
+        q.add(data)
         # also add to a recent redis list, so latest changes are quickly accessible
-        queue.add_recent(data)
+        q.add_recent(data)
       end
   
-      def get_queue_recent        
-        if ENV["RACK_ENV"] == "docker"
-          queue = ChangeLogRb::Queue.new({:host => ENV['QUEUE_PORT_6379_TCP_ADDR'],
-                                          :port => ENV['QUEUE_PORT_6379_TCP_PORT']
-                                          })          
-        else
-          queue = ChangeLogRb::Queue.new(settings.queue)
-        end
-        puts queue.inspect
-        queue.get_recent()
+      def get_queue_recent
+        q = queue
+        logger.debug("Queue: #{queue.inspect}")
+        q.get_recent()
       end
       
       def process_add_request(params)
