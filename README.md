@@ -52,17 +52,22 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
  {"status":200,"message":"Success"}
  ```
  
-#### Docker
-You will end up with a redis instance and a changelogrb instance:
+### Docker
+
+Use docker to quickly spin up a complete POC environment for ChangeLogRb.
+You will end up with a redis, logstash/es/kibana, and a changelogrb instance:
  - `docker pull redis`
+ - `docker pull pblittle/docker-logstash`
  - `docker build -t changelogrb .`
  - `docker run -d --name changelogrb_redis redis`
- - `docker run -d -p 8080:8080 --name changelogrb --link changelogrb_redis:queue changelogrb`
+ - `docker run -d --name changelogrb -p 8080:8080 --link changelogrb_redis:queue changelogrb`
+ - `docker run -d --name changelogrb_logstash -p 9200:9200 -p 9292:9292 -e LOGSTASH_CONFIG_URL=https://raw.githubusercontent.com/fishnix/changelogrb/master/docker/logstash.conf --link changelogrb_redis:queue pblittle/docker-logstash`
+
+The app should be accessible at http://localhost:8080
+Kibana web interface at http://localhost:9292
  
 ### TODO
- - webform
  - rest api key
- - cli client
- - cas-ification
  - api-key regeneration via cas'd user
- - add logstash pieces to docker for demo/poc
+ - ruby cli client
+
