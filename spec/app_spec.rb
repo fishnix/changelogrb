@@ -14,6 +14,7 @@ describe "The ChangeLogRb App" do
 
   before(:each) do
     app.any_instance.stub(:authorize!).and_return(true)
+    app.any_instance.stub(:token_valid?).and_return(true)
   end
 
   it "responds to slash" do
