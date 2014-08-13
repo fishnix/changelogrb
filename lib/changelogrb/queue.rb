@@ -3,12 +3,14 @@ module ChangeLogRb
     require 'redis'
     require 'date'
     require 'json'
+    require 'active_support/all'
     
     def initialize(args)
       redis_host  = args[:host] || '127.0.0.1'
       redis_port  = args[:port] || '6379'
       @redis = Redis.new(:host => redis_host, :port => redis_port)
       @recent_count = args[:recent] || 100
+      @token_ttl = args[:token_ttl] || 36000
     end
     
     def add(cl)
@@ -33,12 +35,47 @@ module ChangeLogRb
       end
     end
 
-    def get_recent()
+    def get_recent
       begin
         @redis.lrange("changelog.recent", 0, -1)
       rescue => e
         "ERROR: #{e}"
       end
     end
+    
+    def add_token(id, token)
+      begin
+        @redis.hset("changelog.token_by_id", id, token)
+        @redis.hset("changelog.id_by_token", token, id)
+        @redis.hset("changelog.token_expiration", token, Time.now + @token_ttl.seconds)
+      rescue => e
+        "ERROR: #{e}"
+      end
+    end
+    
+    def get_token_expiration(token)
+      begin
+        return @redis.hget("changelog.token_expiration", token)
+      rescue => e
+        "ERROR: #{e}"
+      end
+    end
+    
+    def get_id_by_token(token)
+      begin
+        return @redis.hget("changelog.id_by_token", token)
+      rescue => e
+        "ERROR: #{e}"
+      end
+    end
+    
+    def get_token_by_id(id)
+      begin
+        return @redis.hget("changelog.token_by_id", id)
+      rescue => e
+        "ERROR: #{e}"
+      end
+    end
+    
   end
 end

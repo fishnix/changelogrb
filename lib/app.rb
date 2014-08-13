@@ -9,18 +9,21 @@ require 'json-schema'
 require_relative 'changelogrb'
 
 class ChangeLogRbApp < Sinatra::Base
+  # use Rack::MethodOverride
+  
   register Sinatra::Contrib
   register Sinatra::ConfigFile
   register Sinatra::CasAuth
-  use Rack::MethodOverride
+  
   helpers Sinatra::ChangeLogRbApp::Helpers
   
+  set :root, File.dirname(File.dirname(__FILE__))
   set :sessions, true
   set :logging, true
-  set :root, File.dirname(File.dirname(__FILE__))
   configure(:development) { 
     set :session_secret, "secret"
-    set :logging, :debug
+    # set :logging, :debug
+    set :logging, Logger::DEBUG
   }
 
   config_file 'config/config.yml'
@@ -28,6 +31,7 @@ class ChangeLogRbApp < Sinatra::Base
   before "/ui/*" do
     @auth = settings.auth
     authorize!
+    tokinify!
   end
 
   get "/" do
@@ -35,12 +39,25 @@ class ChangeLogRbApp < Sinatra::Base
   end
 
   get "/ui/add" do
-    erb :add, locals: { user_id: session[:user_id] }
+    erb :add, locals: { user_id: session[:user_id], token: get_token }
   end
 
   get "/ui/list" do
     recent_list = get_queue_recent
     erb :list, locals: { recent_list: recent_list }
+  end
+
+  get "/ui/token/:action" do
+    if params[:action] == "show"
+      token = get_token
+      expiry = get_token_expiraton(token)
+      erb :token, locals: { user_id: session[:user_id], token: get_token, expiry: expiry }
+    elsif params[:action] == "regenerate"
+      regenerate_token
+      redirect to('/ui/token/show')
+    else
+      error
+    end
   end
 
   post '/api/add' do
@@ -49,7 +66,21 @@ class ChangeLogRbApp < Sinatra::Base
     request.body.rewind
     params = JSON.parse request.body.read
 
-    json process_add_request(params)
+    logger.debug("Got JSON params: #{params.inspect}")
+
+    if token_valid?(params["user"], params["token"])
+      strip_from(params, 'token')
+      response = process_add_request(params)
+    else
+      response = {
+          :status => '401',
+          :message => "Unauthorized"
+        }
+    end
+    
+    logger.debug("Responding to api call with: #{response.inspect}")
+    
+    json response
   end
   
   not_found do
