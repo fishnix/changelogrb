@@ -24,6 +24,9 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
 - `rackup -p 4567` (or for dev `shotgun config.ru`)
 - `bundle exec unicorn -c config/unicorn.rb`
  
+#### Examples
+- init script for unicorn in examples/unicorn_changelogrb 
+  
 ### What?
 
  - A webform will be available at /add
@@ -67,7 +70,5 @@ The app should be accessible at http://localhost:8080
 Kibana web interface at http://localhost:9292
  
 ### TODO
- - rest api key
- - api-key regeneration via cas'd user
- - ruby cli client
+ - nada right now (w00t!)
 
