@@ -9,18 +9,21 @@ require 'json-schema'
 require_relative 'changelogrb'
 
 class ChangeLogRbApp < Sinatra::Base
+  # use Rack::MethodOverride
+  
   register Sinatra::Contrib
   register Sinatra::ConfigFile
   register Sinatra::CasAuth
-  use Rack::MethodOverride
+  
   helpers Sinatra::ChangeLogRbApp::Helpers
   
+  set :root, File.dirname(File.dirname(__FILE__))
   set :sessions, true
   set :logging, true
-  set :root, File.dirname(File.dirname(__FILE__))
   configure(:development) { 
     set :session_secret, "secret"
-    set :logging, :debug
+    # set :logging, :debug
+    set :logging, Logger::DEBUG
   }
 
   config_file 'config/config.yml'
@@ -63,9 +66,10 @@ class ChangeLogRbApp < Sinatra::Base
     request.body.rewind
     params = JSON.parse request.body.read
 
-    logger.info("Got JSON params: #{params.inspect}")
+    logger.debug("Got JSON params: #{params.inspect}")
 
     if token_valid?(params["user"], params["token"])
+      strip_from(params, 'token')
       response = process_add_request(params)
     else
       response = {
@@ -73,6 +77,8 @@ class ChangeLogRbApp < Sinatra::Base
           :message => "Unauthorized"
         }
     end
+    
+    logger.debug("Responding to api call with: #{response.inspect}")
     
     json response
   end

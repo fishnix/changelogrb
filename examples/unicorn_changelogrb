@@ -1,0 +1,115 @@
+#!/bin/sh
+#
+# unicorn_changelogrb       
+# Startup script for unicorn for s9y-socialcaster
+#
+# chkconfig: - 86 14
+# processname: unicorn_changelogrb
+# pidfile: /opt/redmine/tmp/pids/unicorn.pid
+# description: Sinatra application server for s9y-socialcaster
+#
+### BEGIN INIT INFO
+# Provides: unicorn_changelogrb
+# Required-Start: $local_fs $remote_fs $network
+# Required-Stop: $local_fs $remote_fs $network
+# Default-Start: 3
+# Default-Stop: 0 1 2 4 5 6
+# Short-Description: start and stop unicorn
+### END INIT INFO
+
+# Source function library.
+. /etc/rc.d/init.d/functions
+
+prog=unicorn
+SINATRA_ROOT=/var/www/apps/current
+UNICORN_CONF=$SINATRA_ROOT/config/unicorn.rb
+ENV=production
+PORT=4567
+lockfile=${LOCKFILE-/var/lock/subsys/unicorn}
+pidfile=$SINATRA_ROOT/tmp/unicorn.pid
+SLEEPMSEC=100000
+RETVAL=0
+USER=app
+
+# location of sysconfig file
+[ -L $0 ] && SYSCONFIG="/etc/sysconfig/$(basename $(readlink $0))" || SYSCONFIG="/etc/sysconfig/$(basename $0)"
+
+### Read configuration
+[ -r "$SYSCONFIG" ] && source "$SYSCONFIG"
+
+start() {
+    echo -n $"Starting $prog: "
+    CMD="cd $SINATRA_ROOT && bundle exec unicorn -c ${UNICORN_CONF} -E ${ENV} -D -p ${PORT}"
+    su -c "${CMD}" - ${USER}
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && touch ${lockfile}
+    return $RETVAL
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    killproc -p ${pidfile} ${prog} -QUIT
+    RETVAL=$?
+    echo
+    [ $RETVAL = 0 ] && rm -f ${lockfile} ${pidfile}
+}
+
+restart() {
+    echo -n $"Restarting $prog: "
+    # killproc -p ${pidfile} ${prog} -USR2
+    # RETVAL=$?
+    stop
+    sleep 5
+    start
+    echo
+}
+
+reload() {
+    echo -n $"Reloading $prog: "
+    killproc -p ${pidfile} ${prog} -HUP
+    RETVAL=$?
+    echo
+}
+
+rh_status() {
+    status -p ${pidfile} ${prog}
+}
+
+# See how we were called.
+case "$1" in
+    start)
+        rh_status >/dev/null 2>&1 && exit 0
+        start
+        ;;
+    stop)
+        stop
+        ;;
+    status)
+        rh_status
+        RETVAL=$?
+        ;;
+    restart)
+        restart
+        ;;
+    upgrade)
+        upgrade
+        ;;
+    condrestart|try-restart)
+        if rh_status >/dev/null 2>&1; then
+            stop
+            start
+        fi
+        ;;
+    force-reload|reload)
+        reload
+        ;;
+    configtest)
+        configtest
+        ;;
+    *)
+        echo $"Usage: $prog {start|stop|restart|condrestart|try-restart|force-reload|upgrade|reload|status|help|configtest}"
+        RETVAL=2
+esac
+
+exit $RETVAL

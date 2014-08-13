@@ -17,13 +17,13 @@ module Sinatra
       
       def token_valid?(id, token)
         
-        logger.info("validating token: #{token} for id: #{id}")
+        logger.debug("validating token: #{token} for id: #{id}")
         
         q = queue
         i = q.get_id_by_token(token)
         t = q.get_token_expiration(token)
         
-        logger.info("token_valid? id: #{i}, expiration: #{t}")
+        logger.debug("token_valid? id: #{i}, expiration: #{t}")
         
         return false if i.nil? || t.nil?
         
@@ -51,16 +51,15 @@ module Sinatra
       end
       
       def regenerate_token
-        logger.info("Regenerating token.")
-
         return nil if session[:user_id].nil?
+        logger.info("Regenerating token for #{session[:user_id]}.")
 
         token = generate_token
         set_token(token)
       end
       
       def tokinify!
-        logger.info("Tokenify!")
+        logger.debug("Tokenify!")
         id = session[:user_id]
         return nil if id.nil?
         token = get_token
@@ -117,7 +116,14 @@ module Sinatra
       
       private
         def generate_token
+          logger.debug("Generating random token...")
           return SecureRandom.urlsafe_base64
+        end
+        
+        def strip_from(params, key)
+          logger.debug("Cleaning up params: #{params.inspect}")
+          params.delete(key) 
+          logger.debug("Clean params: #{params.inspect}")
         end
     end
   end
