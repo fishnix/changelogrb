@@ -28,6 +28,7 @@ class ChangeLogRbApp < Sinatra::Base
   before "/ui/*" do
     @auth = settings.auth
     authorize!
+    tokinify!
   end
 
   get "/" do
@@ -49,11 +50,8 @@ class ChangeLogRbApp < Sinatra::Base
       expiry = get_token_expiraton(token)
       erb :token, locals: { user_id: session[:user_id], token: get_token, expiry: expiry }
     elsif params[:action] == "regenerate"
-      set_token(generate_token)
+      regenerate_token
       redirect to('/ui/token/show')
-    elsif params[:action] == "generate" && get_token.nil?
-      set_token(generate_token)
-      redirect back
     else
       error
     end

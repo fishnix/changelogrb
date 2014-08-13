@@ -47,10 +47,27 @@ module Sinatra
       def set_token(token)
         q = queue
         q.add_token(session[:user_id], token)
+        token
       end
       
-      def generate_token
-        return SecureRandom.urlsafe_base64
+      def regenerate_token
+        logger.info("Regenerating token.")
+
+        return nil if session[:user_id].nil?
+
+        token = generate_token
+        set_token(token)
+      end
+      
+      def tokinify!
+        logger.info("Tokenify!")
+        id = session[:user_id]
+        return nil if id.nil?
+        token = get_token
+        unless token_valid?(id, token)
+          token = generate_token
+          set_token(token)
+        end
       end
       
       def add_to_queue(data)
@@ -96,7 +113,12 @@ module Sinatra
         end
 
         return response
-      end      
+      end  
+      
+      private
+        def generate_token
+          return SecureRandom.urlsafe_base64
+        end
     end
   end
 end
