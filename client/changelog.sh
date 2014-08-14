@@ -6,12 +6,13 @@ TEMPFILE="/tmp/$(basename $0).$$.tmp"
 # set defaults
 CL_SERVER="localhost"
 CL_PORT="4567"
+CL_TOKEN=""
 CL_USER=""
 CL_HOSTNAME=""
 CL_CRITICALITY=""
 CL_DESCRIPTION=""
 CL_BODY=""
-CL_ARGS="CL_SERVER CL_PORT CL_USER CL_HOSTNAME CL_CRITICALITY CL_DESCRIPTION"
+CL_ARGS="CL_SERVER CL_PORT CL_TOKEN CL_USER CL_HOSTNAME CL_CRITICALITY CL_DESCRIPTION"
 
 list_args ()
 {
@@ -38,19 +39,22 @@ check_args ()
 usage ()
 {
   echo "  Syntax: "
-  echo "$(basename $0) [-s SERVER -p PORT] -u USER -h HOSTNAME -c CRITICALITY -d DESCRIPTION"
+  echo "$(basename $0) [-s SERVER -p PORT] -t TOKEN -u USER -h HOSTNAME -c CRITICALITY -d DESCRIPTION"
   echo
 }
 
 
 # parse command-line arguments
-while getopts "s:p:u:h:c:d:?" opt; do
+while getopts "s:p:t:u:h:c:d:?" opt; do
   case $opt in
     s)
       CL_SERVER="$OPTARG"
       ;;
     p)
       CL_PORT="$OPTARG"
+      ;;
+    t)
+      CL_TOKEN="$OPTARG"
       ;;
     u)
       CL_USER="$OPTARG"
@@ -79,6 +83,11 @@ while getopts "s:p:u:h:c:d:?" opt; do
 done
 
 # Test if all required arguments were given
+if [ "x" == "x${CL_TOKEN}" ]; then
+  echo "Error: Missing -t argument"
+  missing_arg=1
+fi
+
 if [ "x" == "x${CL_USER}" ]; then
   echo "Error: Missing -u argument"
   missing_arg=1
@@ -119,7 +128,7 @@ CL_BODY=`cat ${TEMPFILE} | base64 -w 0`
 CL_URI="http://${CL_SERVER}:${CL_PORT}/api/add"
 echo "Sending change to ${CL_URI} ..."
 curl ${CL_URI} -sS -X POST -H 'Content-Type: application/json' \
- -d "{\"user\": \"${CL_USER}\", \"hostname\": \"${CL_HOSTNAME}\", \"criticality\": ${CL_CRITICALITY}, \"description\": \"${CL_DESCRIPTION}\", \"body\": \"${CL_BODY}\"}"
+ -d "{\"token\": \"${CL_TOKEN}\", \"user\": \"${CL_USER}\", \"hostname\": \"${CL_HOSTNAME}\", \"criticality\": ${CL_CRITICALITY}, \"description\": \"${CL_DESCRIPTION}\", \"body\": \"${CL_BODY}\"}"
 retval=$?
 echo
 

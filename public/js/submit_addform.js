@@ -26,6 +26,8 @@ $(document).ready(function()
         var response = JSON.parse(jqXHR.responseText);
         if (response.status == 200) {
           $("#divmsg").append('<div class="alert alert-success"><strong>Change record successfully submitted!</strong></div>');
+          // clear the hostname on success
+          $("#cl_hostname").val("");
         } else {
           $("#divmsg").append('<div class="alert alert-danger"><strong>Error submitting request!</strong><br>' + response.status + ': ' + response.message + '</div>');
         }
