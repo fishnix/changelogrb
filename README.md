@@ -45,20 +45,20 @@ This was inspired by the [changelog](https://github.com/prezi/changelog) app by 
 
  ```
  curl http://localhost:4567/api/add -X POST -H 'Content-Type: application/json' \
- -d '{"user": "snarky", "hostname": "herp.derp.edu", "criticality": 3, "description": "Added snarky comment", "body": "--Some diff--"}'
+ -d '{"token": "WPTFaSM6C2nT9re4ZWRV0Q", "user": "snarky", "hostname": "herp.derp.edu", "criticality": 3, "description": "Added snarky comment", "body": "--Some diff--"}'
  ```
  
  - Using the shell client (will open editor so you can paste the body of your change)
  
  ```
- $ ./client/changelog.sh -u snarky -h herp.derp.edu -c 3 -d "Added snarky comment"
+ $ ./client/changelog.sh -t WPTFaSM6C2nT9re4ZWRV0Q -u snarky -h herp.derp.edu -c 3 -d "Added snarky comment"
  {"status":200,"message":"Success"}
  ```
  
 ### Docker
 
 Use docker to quickly spin up a complete POC environment for ChangeLogRb.
-You will end up with a redis, logstash/es/kibana, and a changelogrb instance:
+ You will end up with a redis, logstash/es/kibana, and a changelogrb instance:
  - `docker pull redis`
  - `docker pull pblittle/docker-logstash`
  - `docker build -t changelogrb .`
@@ -67,7 +67,7 @@ You will end up with a redis, logstash/es/kibana, and a changelogrb instance:
  - `docker run -d --name changelogrb_logstash -p 9200:9200 -p 9292:9292 -e LOGSTASH_CONFIG_URL=https://raw.githubusercontent.com/fishnix/changelogrb/master/docker/logstash.conf --link changelogrb_redis:queue pblittle/docker-logstash`
 
 The app should be accessible at http://localhost:8080
-Kibana web interface at http://localhost:9292
+ Kibana web interface at http://localhost:9292
  
 ### TODO
  - nada right now (w00t!)
