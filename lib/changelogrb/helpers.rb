@@ -82,6 +82,17 @@ module Sinatra
         q.get_recent()
       end
       
+      def add_tag(tag)
+        q = queue
+        q.add_tag(tag)
+      end
+      
+      def get_queue_tags
+        q = queue
+        logger.debug("Queue: #{queue.inspect}")
+        q.get_tags()
+      end
+      
       def process_add_request(params)
         # our default response
         response = {
@@ -94,8 +105,21 @@ module Sinatra
         return response unless params.length > 0 
 
         schema_status = schema_validate(params) 
+        # if message looks good - push it to the queue
         if schema_status == "OK"
-          # if message looks good - push it to the queue
+          # add any new custom tags, if specified
+          if params["tag"].blank? and !params["ctag"].blank?
+            params["ctag"].downcase!
+            logger.debug "Adding new tag: #{params["ctag"]}"
+            q_tag_status = add_tag(params["ctag"])
+            if q_tag_status == "OK"
+              # make the new custom tag an actual tag
+              params["tag"] = "#{params["ctag"]}"
+              params["ctag"].clear
+            else
+              logger.debug "Failed to add tag: #{q_tag_status}"
+            end
+          end
           q_status = add_to_queue(params)
           if q_status == "OK"
             response[:status] = 200

@@ -9,11 +9,23 @@ $(document).ready(function()
     var cl_user = $("#cl_user").val();
     var cl_date = $("#cl_date").val();
     var cl_time = $("#cl_time").val();
+    var cl_tag = $("#cl_tag").val();
+    var cl_ctag = $("#cl_ctag").val();
     var cl_hostname = $("#cl_hostname").val();
     var cl_description = $("#cl_description").val();
     var cl_body = btoa($("#cl_body").val()); // base64-encode the body
     // make into JSON
-    formjson = '{"token": "' + cl_token + '", "date": "' + cl_date + '", "time": "' + cl_time + '", "user": "' + cl_user + '", "hostname": "' + cl_hostname + '", "criticality": ' + cl_criticality + ', "description": "' + cl_description + '", "body": "' + cl_body + '"}' 
+    formjson = '{"token": "' + cl_token + 
+               '", "date": "' + cl_date + 
+               '", "time": "' + cl_time + 
+               '", "user": "' + cl_user + 
+               '", "tag": "' + cl_tag + 
+               '", "ctag": "' + cl_ctag + 
+               '", "hostname": "' + cl_hostname + 
+               '", "criticality": ' + cl_criticality + 
+               ', "description": "' + cl_description + 
+               '", "body": "' + cl_body + '"}' 
+    // log to js console
     console.log(formjson);
   
     $.ajax({
