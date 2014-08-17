@@ -43,6 +43,24 @@ module ChangeLogRb
       end
     end
     
+    def add_tag(tag)
+      # we use an unordered set to store the tags
+      begin
+        @redis.sadd("changelog.tags", tag)
+        "OK"
+      rescue => e
+        "ERROR: #{e}"
+      end
+    end
+
+    def get_tags
+      begin
+        @redis.smembers("changelog.tags")
+      rescue => e
+        "ERROR: #{e}"
+      end
+    end
+    
     def add_token(id, token)
       begin
         @redis.hset("changelog.token_by_id", id, token)

@@ -26,6 +26,8 @@ schema:
         type: string
       hostname:
         type: string
+      tag:
+        type: string
       criticality:
         type: integer
       description:
