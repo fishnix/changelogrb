@@ -21,7 +21,13 @@
       <td title="date"><%= "#{change["date"]} #{change["time"]}" %></td>
       <td title="user"><%= change["user"] %></td>
       <td title="hostname"><%= change["hostname"] %></td>
-      <td title="description"><%= change["description"] %></td>
+      <td title="description/tag">
+      <%= if !change["tag"].blank? 
+            "[#{change["tag"]}] #{change["description"]}" 
+          else
+            "#{change["description"]}"
+          end %>
+      </td>
     </tr>
     <tr><td colspan="6">
       <%= "<pre>#{change["body"].unpack('m')[0]}</pre>" %>

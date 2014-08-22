@@ -82,6 +82,17 @@ module Sinatra
         q.get_recent()
       end
       
+      def add_tag(tag)
+        q = queue
+        q.add_tag(tag)
+      end
+      
+      def get_queue_tags
+        q = queue
+        #logger.debug("Queue: #{queue.inspect}")
+        q.get_tags()
+      end
+      
       def process_add_request(params)
         # our default response
         response = {
@@ -94,8 +105,20 @@ module Sinatra
         return response unless params.length > 0 
 
         schema_status = schema_validate(params) 
+        # if message looks good - push it to the queue
         if schema_status == "OK"
-          # if message looks good - push it to the queue
+
+          # process tags, if specified
+          unless params["tag"].blank?
+            params["tag"].downcase!
+            logger.debug "Got tags: #{params["tag"]}"
+            # we push all tags to redis and it's gonna drop any duplicates
+            params["tag"].split(',').each do |tag|
+              q_tag_status = add_tag(tag)
+              logger.debug "Failed to add tag [#{tag}]: #{q_tag_status}" unless q_tag_status == "OK"
+            end
+          end
+
           q_status = add_to_queue(params)
           if q_status == "OK"
             response[:status] = 200
