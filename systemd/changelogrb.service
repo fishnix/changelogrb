@@ -1,0 +1,16 @@
+[Unit]
+Description=Changelogrb
+After=docker.service
+After=etcd.service
+After=redis.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill changelogrb
+ExecStartPre=-/usr/bin/docker rm changelogrb
+ExecStartPre=/usr/bin/docker pull changelogrb
+ExecStart=/usr/bin/docker run -d --name changelogrb -p 8080:8080 --link redis:queue fishnix/changelogrb
+ExecStop=/usr/bin/docker stop changelogrb
+
+[X-Fleet]
+X-ConditionMachineOf=redis.service

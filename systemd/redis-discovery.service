@@ -1,0 +1,10 @@
+[Unit]
+Description=Announce Redis
+BindsTo=redis.service
+
+[Service]
+ExecStart=/bin/sh -c "while true; do etcdctl set /services/queue/redis '{ \"host\": \"%H\", \"port\": 6379, \"version\": \"52c7248a14\" }' --ttl 60;sleep 45;done"
+ExecStop=/usr/bin/etcdctl rm /services/queue/redis
+
+[X-Fleet]
+X-ConditionMachineOf=redis.service

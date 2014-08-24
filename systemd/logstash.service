@@ -1,0 +1,16 @@
+[Unit]
+Description=Logstash
+After=docker.service
+After=etcd.service
+After=changelogrb.service
+
+[Service]
+TimeoutStartSec=0
+ExecStartPre=-/usr/bin/docker kill logstash
+ExecStartPre=-/usr/bin/docker rm logstash
+ExecStartPre=/usr/bin/docker pull logstash
+ExecStart=/usr/bin/docker run --name logstash -p 9200:9200 -p 9292:9292 -e LOGSTASH_CONFIG_URL=https://raw.githubusercontent.com/fishnix/changelogrb/master/docker/logstash.conf --link logstash:queue pblittle/docker-logstash
+ExecStop=/usr/bin/docker stop logstash
+
+[X-Fleet]
+X-ConditionMachineOf=redis.service
